@@ -7,7 +7,7 @@ using namespace std::chrono_literals;
 
 ...
 
-auto timer = setTimer(5s, []() {
+auto timer = createTimer(5s, []() {
     std::cout << "Call callback\n";    <-- Создание callback'а
 })
 
