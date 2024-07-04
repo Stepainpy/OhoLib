@@ -1,3 +1,4 @@
+#pragma once
 #include <iterator>
 #include <stdexcept>
 
@@ -21,7 +22,7 @@ namespace oho {
 
 class Range {
 public:
-    class range_iterator {
+    class iterator {
     public:
         using iterator_category = std::input_iterator_tag;
         using value_type = std::ptrdiff_t;
@@ -29,27 +30,27 @@ public:
         using pointer   = const value_type*;
         using reference = const value_type&;
 
-        explicit range_iterator(value_type _cur, value_type _step)
+        explicit iterator(value_type _cur, value_type _step)
             : current(_cur), step(_step) {}
-        range_iterator(const range_iterator& it)
+        iterator(const iterator& it)
             : current(it.current), step(it.step) {}
-        range_iterator& operator=(const range_iterator& it) {
+        iterator& operator=(const iterator& it) {
             current = it.current;
             step = it.step;
             return *this;
         }
-        ~range_iterator() = default;
+        ~iterator() = default;
 
-        bool operator==(const range_iterator& it) const { return current == it.current; }
-        bool operator!=(const range_iterator& it) const { return !(*this == it); }
+        bool operator==(const iterator& it) const { return current == it.current; }
+        bool operator!=(const iterator& it) const { return !(*this == it); }
 
         reference operator*() const { return current; }
-        range_iterator& operator++() {
+        iterator& operator++() {
             current += step;
             return *this;
         }
-        range_iterator operator++(int) {
-            range_iterator it = *this;
+        iterator operator++(int) {
+            iterator it = *this;
             ++(*this);
             return it;
         }
@@ -74,23 +75,23 @@ public:
     Range(std::ptrdiff_t _start, std::ptrdiff_t _stop): Range(_start, _stop, 1) {}
     Range(std::ptrdiff_t _stop): Range(0, _stop, 1) {}
 
-    range_iterator begin() const {
-        return range_iterator(start, step);
+    iterator begin() const {
+        return iterator(start, step);
     }
-    range_iterator end() const {
+    iterator end() const {
         std::ptrdiff_t range_count;
 
         if (isReverse) range_count = start - stop;
         else           range_count = stop - start;
         
         if (range_count == 0)
-            return range_iterator(start, step);
+            return iterator(start, step);
         
         std::ptrdiff_t gap = range_count % step;
         if (gap == 0)
-            return range_iterator(stop, step);
+            return iterator(stop, step);
         
-        return range_iterator(stop + step - gap * (isReverse ? -1 : 1), step);
+        return iterator(stop + step - gap * (isReverse ? -1 : 1), step);
     }
 
     std::ptrdiff_t getStart() const { return start; }
